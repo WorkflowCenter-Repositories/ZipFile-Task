@@ -1,39 +1,39 @@
-# SAMTools-Picard-Task
-##Repository for SAMTools-index Task of Sequence Cleaning Workflow
+# ZipFile-Task
+##Repository for ZipFile Task 
 
 ###How to deploy the task:  
 - Clone this repository to your machine   
 - if you want deploy the task with your own data then  
-  - in Mega-NJ-Task/input folder put your file, edit Mega-NJ-Task/input.yaml file and change 'input-file' to your file name  
-  - in a terminal run . ./task-deploy.sh within Mega-NJ-Task folder  
+  - in ZipFile-Task/input folder put your file, edit ZipFile-Task/input.yaml file and change 'input-file' to your file name  
+  - in a terminal run . ./task-deploy.sh within ZipFile-Task folder  
 - if you are happy to deploy the task with the sample input file in input folder just run task-deploy.sh as above  
 
 ###Information:  
 
-  Task-Name: SAMTools-index  
+  Task-Name: ZipFile  
   version: 1.0  
-  Description: The task implements neighbour joining method. It was designed in the e-Science Central system.  
-  task-dependencies: {java1.7, SAMTools-lib}   
+  Description: The task implements zipping a file  
+  task-dependencies: {java1.7}   
   
 Blueprint:  
   
-  blueprint-name: SAMTools-Picard.yaml  
-  Docker-images: dtdwd/samtools1  
+  blueprint-name: ZipFile.yaml  
+  Docker-images: dtdwd/filezip1  
   sizes: 228 MB  
   OS-types: ubuntu14.4   
   
 Input:  
   
-  input-file(s):   
-  description:   
-  types:   
+  input-file(s): file1    
+  description: any file to be zipped
+  types: any type
   
 Outputs:  
   
-  output-folder: '~/SAMTools-Picard'  
+  output-folder: '~/ZipFile'  
   output-file(s): {}  
-  description:  
-  types: {}  
+  description: a zipped file
+  types: zip  
   
 Execution-Environment:  
   
