@@ -5,7 +5,7 @@ tosca_definitions_version: cloudify_dsl_1_0
 imports:
   - http://www.getcloudify.org/spec/cloudify/3.1/types.yaml
   - https://raw.githubusercontent.com/rawaqasha/e-sc-cloudify/master/esc_nodetypes.yaml
-  #- https://github.com/WorkflowCenter-Repositories/SAMTools-Picard-Task/raw/master/SAMTools_nodetype.yaml
+  - https://github.com/WorkflowCenter-Repositories/ZipFile-Task/raw/zip-PW/ZipFile_nodetype.yaml
 
 inputs:
 
@@ -22,7 +22,7 @@ inputs:
   docker-image: 
       description: > 
         Docker image to be used for container building
-      default: 'dtdwd/filezip1'
+      default: 'dtdwd/filezip:2'
 
 node_types:
 

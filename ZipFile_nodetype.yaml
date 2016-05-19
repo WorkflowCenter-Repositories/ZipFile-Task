@@ -16,6 +16,9 @@ node_types:
   zipFile:
     derived_from: workflow_service
     properties:
+      password:
+        type: string
+        default: zipfile
       #input
       input-1:
         type: string
