@@ -1,5 +1,5 @@
 # ZipFile-Task
-##Repository for ZipFile Task 
+##Repository for ZipFile with password Task 
 
 ###How to deploy the task:  
 - Clone this repository to your machine   
@@ -10,15 +10,15 @@
 
 ###Information:  
 
-  Task-Name: ZipFile  
+  Task-Name: ZipFile-PW  
   version: 1.0  
   Description: The task implements zipping a file  
   task-dependencies: {java1.7}   
   
 Blueprint:  
   
-  blueprint-name: ZipFile.yaml  
-  Docker-images: dtdwd/filezip1  
+  blueprint-name: ZipFile-PW.yaml  
+  Docker-images: dtdwd/filezip2  
   sizes: 228 MB  
   OS-types: ubuntu14.4   
   
