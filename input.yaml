@@ -1,0 +1,6 @@
+input-dir: 'input' #input directory
+input-file: 'output-SAM_BAM-files.bai'  #first input file
+docker-image: 'rawa/samtools1'   #Docker image
+
+
+

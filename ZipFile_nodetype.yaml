@@ -1,0 +1,27 @@
+node_types:
+# general block
+  workflow_service:
+    derived_from: cloudify.nodes.ApplicationModule
+    properties:
+      block_description:
+        description: Description of the block function
+        type: string
+      block_name:
+        type: string
+      block_category:
+        type: string
+      service_type:
+        type: string
+
+  zipFile:
+    derived_from: workflow_service
+    properties:
+      #input
+      input-1:
+        type: string
+        default: file-wrapper
+      #output:
+      output-1:
+        type: string
+        default: file-wrapper
+

@@ -1,0 +1,158 @@
+# Blueprint to deploy SAMTools-index task
+
+tosca_definitions_version: cloudify_dsl_1_0
+
+imports:
+  - http://www.getcloudify.org/spec/cloudify/3.1/types.yaml
+  - https://raw.githubusercontent.com/rawaqasha/e-sc-cloudify/master/esc_nodetypes.yaml
+  #- https://github.com/WorkflowCenter-Repositories/SAMTools-Picard-Task/raw/master/SAMTools_nodetype.yaml
+
+inputs:
+
+  input-dir:
+      description: >
+        The dir path of the input files  
+      default: 'input'
+
+  input-file:
+      description: >
+        input file for importFile1
+      default: output-SAM_BAM-files.bai
+
+  docker-image: 
+      description: > 
+        Docker image to be used for container building
+      default: 'dtdwd/filezip1'
+
+node_types:
+
+  docker_container:
+    derived_from: cloudify.nodes.Root
+    properties:
+      image_name:
+        type: string
+        default: { get_input: docker-image }
+      container_ID:
+        type: string
+        default: SAMTools-container
+
+node_templates:
+
+  host:
+    type: cloudify.nodes.Compute
+    properties:
+      ip: localhost
+      install_agent: false
+
+  starterBlock:
+    type: cloudify.nodes.ApplicationModule
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create:
+          implementation: scripts/start-inhost.sh
+          inputs:
+            process:
+              args: [SAMTools-Picard]
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: host
+
+  container:
+    type: docker_container
+    properties:
+      container_ID: filezip-container
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create:
+          implementation: scripts/container.sh
+          inputs:
+            process:
+              args: [ZipFile]
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: host
+      - type: cloudify.relationships.depends_on
+        target: starterBlock
+
+  Java:
+    type: spec_library
+    properties:
+      lib_name: default-jdk
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        create:
+          implementation: scripts/java-install2.sh
+          inputs:
+            process:
+              args: [ZipFile]
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: container
+
+  importFile:
+    type: importfile
+    properties:
+      block_description: import file
+      block_name: importfile1.jar
+      block_category: File Management
+      service_type: block
+      Source: file1.txt
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        configure:
+          implementation: scripts/get-input.sh
+          inputs:
+            process:
+             args: [ZipFile, filezip-container, { get_input: input-dir }, { get_input: input-file }] 
+        start: 
+          implementation: scripts/block-deploy3.sh
+          inputs:
+            process:
+             args: [ZipFile, filezip-container, 'https://github.com/rawaqasha/eScBlocks-host/raw/master/importfile1.jar', { get_input: input-file }]
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: container
+      - type: cloudify.relationships.depends_on
+        target: Java
+
+  FileZip:
+    type: zipFile
+    properties:
+      block_description: I don't know
+      block_name: filezip1.jar
+      block_category: File Management
+      service_type: block
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: container
+      - type: block_link
+        target: importFile
+        source_interfaces:
+          cloudify.interfaces.relationship_lifecycle:
+            preconfigure:
+              implementation: scripts/datacopy.sh
+              inputs:
+                process:
+                  args: [importFile/output-1, FileZip/input-1, ZipFile, filezip-container]        
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        start:
+          implementation: scripts/block-deploy3.sh
+          inputs:
+            process:
+              args: [ZipFile, filezip-container, 'https://github.com/rawaqasha/eScBlocks-host/raw/master/filezip1.jar']
+
+  finalBlock:
+    type: cloudify.nodes.ApplicationModule
+    interfaces:
+      cloudify.interfaces.lifecycle:
+        start:
+          implementation: scripts/final-inhost.sh
+          inputs:
+            process:
+              args: [filezip-container]
+    relationships:
+      - type: cloudify.relationships.contained_in
+        target: host
+      - type: cloudify.relationships.depends_on
+        target: FileZip
