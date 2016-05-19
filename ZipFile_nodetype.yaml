@@ -20,6 +20,9 @@ node_types:
       input-1:
         type: string
         default: file-wrapper
+      password:
+        type: string
+        default: filezip
       #output:
       output-1:
         type: string
