@@ -17,7 +17,7 @@ inputs:
   input-file:
       description: >
         input file for importFile1
-      default: output-SAM_BAM-files.bai
+      default: file1.jpg
 
   docker-image: 
       description: > 
@@ -34,7 +34,7 @@ node_types:
         default: { get_input: docker-image }
       container_ID:
         type: string
-        default: SAMTools-container
+        default: container
 
 node_templates:
 
@@ -52,7 +52,7 @@ node_templates:
           implementation: scripts/start-inhost.sh
           inputs:
             process:
-              args: [SAMTools-Picard]
+              args: [ZipFile]
     relationships:
       - type: cloudify.relationships.contained_in
         target: host
@@ -84,7 +84,7 @@ node_templates:
           implementation: scripts/java-install2.sh
           inputs:
             process:
-              args: [ZipFile]
+              args: [filezip-container]
     relationships:
       - type: cloudify.relationships.contained_in
         target: container
@@ -140,7 +140,7 @@ node_templates:
           implementation: scripts/block-deploy3.sh
           inputs:
             process:
-              args: [ZipFile, filezip-container, 'https://github.com/rawaqasha/eScBlocks-host/raw/master/filezip1.jar']
+              args: [ZipFile, filezip-container, 'https://github.com/WorkflowCenter-Repositories/ZipFile-Task/raw/master/filezip1.jar']
 
   finalBlock:
     type: cloudify.nodes.ApplicationModule
